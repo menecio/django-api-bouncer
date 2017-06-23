@@ -12,12 +12,6 @@ from .models import (
 from .schemas import plugins
 
 
-class ApiSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Api
-        fields = '__all__'
-
-
 class ConsumerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Consumer
@@ -25,6 +19,13 @@ class ConsumerSerializer(serializers.ModelSerializer):
 
 
 class ConsumerKeySerializer(serializers.ModelSerializer):
+    consumer = serializers.SlugRelatedField(
+        many=False,
+        read_only=False,
+        slug_field='username',
+        queryset=Consumer.objects.all()
+    )
+
     class Meta:
         model = ConsumerKey
         fields = '__all__'
@@ -44,6 +45,12 @@ class ConsumerKeySerializer(serializers.ModelSerializer):
 
 
 class PluginSerializer(serializers.ModelSerializer):
+    api = serializers.SlugRelatedField(
+        many=False,
+        read_only=True,
+        slug_field='name'
+    )
+
     class Meta:
         model = Plugin
         fields = '__all__'
@@ -66,3 +73,14 @@ class PluginSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'config': e})
 
         return data
+
+
+class ApiSerializer(serializers.ModelSerializer):
+    plugins = PluginSerializer(
+        many=True,
+        read_only=False,
+    )
+
+    class Meta:
+        model = Api
+        fields = '__all__'

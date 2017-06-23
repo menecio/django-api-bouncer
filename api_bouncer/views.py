@@ -1,3 +1,7 @@
+import json
+
+from requests import Request, Session
+
 from rest_framework import (
     mixins,
     permissions,
@@ -5,7 +9,10 @@ from rest_framework import (
     viewsets,
     status,
 )
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import (
+    api_view,
+    detail_route,
+)
 
 from .models import (
     Api,
@@ -20,6 +27,33 @@ from .serializers import (
     ConsumerKeySerializer,
     PluginSerializer,
 )
+
+
+@api_view(exclude_from_schema=True)
+def api_bouncer(request):
+    dest_host = request.META.get('HTTP_HOST')
+    api = Api.objects.filter(hosts__contains=[dest_host]).first()
+
+    if not api:
+        return response.Response(
+            {'errors': 'Invalid host'},
+            status.HTTP_400_BAD_REQUEST
+        )
+
+    session = Session()
+    req = Request(request.method, api.upstream_url, data=request.data)
+    prepped = session.prepare_request(req)
+    resp = session.send(prepped)
+
+    if request.content_type == 'application/json':
+        try:
+            content = resp.json()
+        except json.decoder.JSONDecodeError as e:
+            content = {'errors': e.msg}
+    else:
+        content = resp.content
+
+    return response.Response(content, resp.status_code)
 
 
 class ApiViewSet(viewsets.ModelViewSet):

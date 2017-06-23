@@ -32,8 +32,10 @@ class Api(models.Model):
             ]
         )
     )
-    plugins = JSONField(default={}, null=True)
     upstream_url = models.URLField(null=False)
+
+    def __unicode__(self):
+        return self.name
 
 
 class Consumer(models.Model):
@@ -59,3 +61,17 @@ class ConsumerKey(models.Model):
 
     class Meta:
         unique_together = ('consumer', 'key')
+
+
+class Plugin(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    api = models.ForeignKey(
+        'Api',
+        related_name='plugins',
+        on_delete=models.CASCADE
+    )
+    name = models.CharField(max_length=32, blank=False, null=False)
+    config = JSONField(default={}, null=True)
+
+    class Meta:
+        unique_together = ('api', 'name', 'config')

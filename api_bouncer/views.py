@@ -11,6 +11,7 @@ from .models import (
     Api,
     Consumer,
     ConsumerKey,
+    Plugin,
 )
 from .schemas import defaults, plugins
 from .serializers import (
@@ -94,7 +95,7 @@ class ConsumerViewSet(viewsets.ModelViewSet):
     def add_key_auth(self, request, username=None):
         consumer = self.get_object()
         data = {
-            'consumer': consumer.id,
+            'consumer': consumer.username,
             'key': request.data.get('key'),
         }
         serializer = ConsumerKeySerializer(data=data)
@@ -114,4 +115,10 @@ class ConsumerViewSet(viewsets.ModelViewSet):
 class ConsumerKeyViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = ConsumerKeySerializer
     queryset = ConsumerKey.objects.all()
+    permission_classes = [permissions.IsAdminUser]
+
+
+class PluginViewSet(viewsets.ModelViewSet):
+    serializer_class = PluginSerializer
+    queryset = Plugin.objects.all()
     permission_classes = [permissions.IsAdminUser]

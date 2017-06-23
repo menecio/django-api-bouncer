@@ -8,6 +8,7 @@ from . import views
 router = DefaultRouter()
 router.register(r'apis', views.ApiViewSet)
 router.register(r'consumers', views.ConsumerViewSet)
+router.register(r'plugins', views.PluginViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),

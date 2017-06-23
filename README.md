@@ -11,7 +11,7 @@ Detailed documentation is in the "docs" directory.
 * Python (3.5, 3.6)
 * Django (1.11)
 * Django Rest Framework (3.6)
-* PostgreSQL (9.4444+)
+* PostgreSQL (9.4+)
 * psycopg2 (2.5.4+)
 
 # Quick start

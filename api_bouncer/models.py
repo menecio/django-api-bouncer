@@ -1,6 +1,9 @@
 import uuid
 
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import (
+    ArrayField,
+    JSONField,
+)
 from django.core.validators import RegexValidator
 from django.db import models
 
@@ -10,7 +13,7 @@ FQDN_REGEX = (
 )
 
 
-class API(models.Model):
+class Api(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     name = models.CharField(
@@ -29,6 +32,7 @@ class API(models.Model):
             ]
         )
     )
+    plugins = JSONField(default={}, null=True)
     upstream_url = models.URLField(null=False)
 
 
@@ -45,8 +49,13 @@ class Consumer(models.Model):
 
 class ConsumerKey(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    key = models.CharField(max_length=200, blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
     consumer = models.ForeignKey('Consumer', on_delete=models.CASCADE)
+    key = models.CharField(
+        max_length=200,
+        blank=False,
+        null=False
+    )
 
     class Meta:
         unique_together = ('consumer', 'key')

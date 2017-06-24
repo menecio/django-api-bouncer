@@ -1,7 +1,5 @@
-import json
-
 from requests import Request, Session
-
+from django.http import HttpResponse
 from rest_framework import (
     mixins,
     permissions,
@@ -10,7 +8,6 @@ from rest_framework import (
     status,
 )
 from rest_framework.decorators import (
-    api_view,
     detail_route,
 )
 
@@ -29,7 +26,6 @@ from .serializers import (
 )
 
 
-@api_view(exclude_from_schema=True)
 def api_bouncer(request):
     dest_host = request.META.get('HTTP_HOST')
     api = Api.objects.filter(hosts__contains=[dest_host]).first()
@@ -40,20 +36,18 @@ def api_bouncer(request):
             status.HTTP_400_BAD_REQUEST
         )
 
+    url = '{0}{1}'.format(api.upstream_url, request.path)
     session = Session()
-    req = Request(request.method, api.upstream_url, data=request.data)
+    req = Request(request.method, url, params=request.GET, data=request.POST)
     prepped = session.prepare_request(req)
     resp = session.send(prepped)
+    content_type = resp.headers['content-type']
 
-    if request.content_type == 'application/json':
-        try:
-            content = resp.json()
-        except json.decoder.JSONDecodeError as e:
-            content = {'errors': e.msg}
-    else:
-        content = resp.content
-
-    return response.Response(content, resp.status_code)
+    return HttpResponse(
+        content=resp.content,
+        content_type=content_type,
+        status=resp.status_code,
+    )
 
 
 class ApiViewSet(viewsets.ModelViewSet):

@@ -1,5 +1,7 @@
+import re
+
 from requests import Request, Session
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from rest_framework import (
     mixins,
     permissions,
@@ -7,9 +9,7 @@ from rest_framework import (
     viewsets,
     status,
 )
-from rest_framework.decorators import (
-    detail_route,
-)
+from rest_framework.decorators import detail_route
 
 from .models import (
     Api,
@@ -17,9 +17,13 @@ from .models import (
     ConsumerKey,
     Plugin,
 )
-from .schemas import defaults, plugins
+from .schemas import (
+    defaults,
+    plugins,
+)
 from .serializers import (
     ApiSerializer,
+    BouncerSerializer,
     ConsumerSerializer,
     ConsumerKeySerializer,
     PluginSerializer,
@@ -27,26 +31,44 @@ from .serializers import (
 
 
 def api_bouncer(request):
+    def get_headers(meta):
+        regex = re.compile(r'^HTTP_')
+        return {
+            (regex.sub('', k)).replace('_', '-'): v
+            for k, v in meta.items()
+            if k.startswith('HTTP_')
+        }
+
     dest_host = request.META.get('HTTP_HOST')
     api = Api.objects.filter(hosts__contains=[dest_host]).first()
 
-    if not api:
-        return response.Response(
-            {'errors': 'Invalid host'},
-            status.HTTP_400_BAD_REQUEST
+    serializer = BouncerSerializer(data={
+        'api': api.name,
+        'headers': get_headers(request.META),
+    })
+
+    if serializer.is_valid():
+        url = '{0}{1}'.format(api.upstream_url, request.path)
+        session = Session()
+        req = Request(
+            request.method,
+            url,
+            params=request.GET,
+            data=request.POST
+        )
+        prepped = session.prepare_request(req)
+        resp = session.send(prepped)
+        content_type = resp.headers['content-type']
+
+        return HttpResponse(
+            content=resp.content,
+            content_type=content_type,
+            status=resp.status_code,
         )
 
-    url = '{0}{1}'.format(api.upstream_url, request.path)
-    session = Session()
-    req = Request(request.method, url, params=request.GET, data=request.POST)
-    prepped = session.prepare_request(req)
-    resp = session.send(prepped)
-    content_type = resp.headers['content-type']
-
-    return HttpResponse(
-        content=resp.content,
-        content_type=content_type,
-        status=resp.status_code,
+    return JsonResponse(
+        data={'errors': 'Invalid request'},
+        status=status.HTTP_400_BAD_REQUEST,
     )
 
 

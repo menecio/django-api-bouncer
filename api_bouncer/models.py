@@ -34,7 +34,7 @@ class Api(models.Model):
     )
     upstream_url = models.URLField(null=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -47,6 +47,9 @@ class Consumer(models.Model):
         null=False,
         unique=True
     )
+
+    def __str__(self):
+        return self.username
 
 
 class ConsumerKey(models.Model):
@@ -75,3 +78,6 @@ class Plugin(models.Model):
 
     class Meta:
         unique_together = ('api', 'name', 'config')
+
+    def __str__(self):
+        return '{}-{}'.format(self.api, self.name)

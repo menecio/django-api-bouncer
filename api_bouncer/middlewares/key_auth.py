@@ -36,8 +36,9 @@ class KeyAuthMiddleware(object):
             key = request.body.get('key')
 
         c_key = (
-            ConsumerKey.objects.select_related('consumer')
-                .filter(key=key).first()
+            ConsumerKey.objects
+                       .select_related('consumer')
+                       .filter(key=key).first()
         )
 
         if c_key:
@@ -56,4 +57,3 @@ class KeyAuthMiddleware(object):
                 return request.META[key_name]
 
         return None
-

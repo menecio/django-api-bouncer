@@ -17,16 +17,23 @@ Detailed documentation is in the "docs" directory.
 # Quick start
 
 1. Add "api_bouncer" to your INSTALLED_APPS setting like this::
-
+```
     INSTALLED_APPS = [
-        ...
+        # all other Django apss you have...
         'api_bouncer',
     ]
-
+```
+2. Activate the `key-auth` plugin by adding the middleware on your settings.py::
+```python
+    MIDDLEWARE = [
+        # all other middlewares...
+        'api_bouncer.middlewares.key_auth.KeyAuthMiddleware',
+    ]
+```
 2. Include the api_bouncer URLconf in your project urls.py like this::
-
-    url(r'^api-bouncer/', include('api_bouncer.urls')),
-
+```python
+    url(r'^', include('api_bouncer.urls', namespace='api_bouncer')),
+```
 3. Run `python manage.py migrate` to create the api_bouncer models.
 
 4. Start the development server and visit http://127.0.0.1:8000/admin/

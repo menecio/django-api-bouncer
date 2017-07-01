@@ -30,12 +30,12 @@ Detailed documentation is in the "docs" directory.
         'api_bouncer.middlewares.key_auth.KeyAuthMiddleware',
     ]
 ```
-2. Include the api_bouncer URLconf in your project urls.py like this::
+3. Include the api_bouncer URLconf in your project urls.py like this::
 ```python
     url(r'^', include('api_bouncer.urls', namespace='api_bouncer')),
 ```
-3. Run `python manage.py migrate` to create the api_bouncer models.
+4. Run `python manage.py migrate` to create the api_bouncer models.
 
-4. Start the development server and visit http://127.0.0.1:8000/admin/
+5. Start the development server and visit http://127.0.0.1:8000/admin/
    to register your APIs (you'll need the Admin app enabled).
 

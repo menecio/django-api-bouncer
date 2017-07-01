@@ -82,6 +82,7 @@ class ApiSerializer(serializers.ModelSerializer):
     plugins = PluginSerializer(
         many=True,
         read_only=False,
+        required=False
     )
 
     class Meta:

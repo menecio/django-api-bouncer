@@ -34,14 +34,22 @@ matrix:
     - env: TOXENV=py35-djangomaster
     - env: TOXENV=py36-djangomaster
 
+cache:
+  directories:
+    - $HOME/.cache/pip
+    - $TRAVIS_BUILD_DIR/.tox
+
 install:
-  - pip install tox
+  - pip install coveralls tox
   
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 
 script:
   - tox
+  
+after_script:
+  - coveralls
 
 notifications:
   email: false

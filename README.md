@@ -1,5 +1,7 @@
 # API Bouncer
 
+[![pypi-version]][pypi]
+
 API Bouncer is a simple Django app to provide an API
 Gateway for micro-services.
 

@@ -1,6 +1,6 @@
 # API Bouncer
 
-[![pypi]][pypi]
+[![pypi-version]][pypi]
 
 API Bouncer is a simple Django app to provide an API
 Gateway for micro-services.
@@ -41,4 +41,5 @@ Detailed documentation is in the "docs" directory.
 5. Start the development server and visit http://127.0.0.1:8000/admin/
    to register your APIs (you'll need the Admin app enabled).
 
-[pypi]: https://img.shields.io/badge/pypi-1.0-blue.svg
+[pypi-version]: https://img.shields.io/badge/pypi-1.0-blue.svg
+[pypi]: https://pypi.python.org/pypi/django-api-bouncer

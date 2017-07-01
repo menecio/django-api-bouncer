@@ -90,20 +90,14 @@ class ApiSerializer(serializers.ModelSerializer):
 
 
 class BouncerSerializer(serializers.Serializer):
-    api = ApiSerializer(many=False)
+    api = serializers.CharField(allow_blank=False, allow_null=False)
     headers = serializers.DictField(child=serializers.CharField())
 
     def validate(self, data):
-        api = Api.objects.select_related('plugins').get(name=data['api'])
+        api = Api.objects.get(name=data['api'])
         if not api:
             raise serializers.ValidationError({
                 'api': 'Unknown API',
             })
-
-        for plugin in api.plugins:
-            serializer = PluginSerializer(plugin)
-            data['headers'] = (
-                serializer.process_headers(headers=data['headers'])
-            )
 
         return data

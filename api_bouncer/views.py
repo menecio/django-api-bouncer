@@ -42,6 +42,9 @@ def api_bouncer(request):
     dest_host = request.META.get('HTTP_HOST')
     api = Api.objects.filter(hosts__contains=[dest_host]).first()
 
+    if not api:
+        return JsonResponse(data={}, status=status.HTTP_200_OK)
+
     serializer = BouncerSerializer(data={
         'api': api.name,
         'headers': get_headers(request.META),
@@ -67,7 +70,7 @@ def api_bouncer(request):
         )
 
     return JsonResponse(
-        data={'errors': 'Invalid request'},
+        data={'errors': serializer.errors},
         status=status.HTTP_400_BAD_REQUEST,
     )
 

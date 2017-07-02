@@ -40,7 +40,7 @@ class ConsumerKeySerializer(serializers.ModelSerializer):
     def validate_key(self, value):
         """Verify if no key is given and generate one"""
         if not value:
-            value = str(uuid.uuid4()).replace('-', '')
+            value = str(uuid.uuid4().int)
         return value
 
 

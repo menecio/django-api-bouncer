@@ -58,3 +58,27 @@ class ConsumerKeyTests(APITestCase):
         self.assertEqual(ConsumerKey.objects.count(), 1)
         self.assertEqual(ConsumerKey.objects.get().consumer.username, 'django')
         self.assertEqual(ConsumerKey.objects.get().key, data['key'])
+
+    def test_create_consumer_key_given_key_too_short(self):
+        """
+        Ensure we can create a new consumer key object, with a default value.
+        """
+        data = {'key': 'abc123'}
+        self.client.login(username='john', password='john123john')
+        url = self.url.format(self.consumer.username)
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_consumer_key_given_empty_key(self):
+        """
+        Ensure we can't create an empty consumer key object, if an empty key is
+        given, we must generate a hash for the key
+        """
+        data = {'key': ''}
+        self.client.login(username='john', password='john123john')
+        url = self.url.format(self.consumer.username)
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertNotEqual(response.data['key'], '')

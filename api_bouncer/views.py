@@ -32,11 +32,12 @@ from .serializers import (
 
 def api_bouncer(request):
     def get_headers(meta):
+        """Get all headers beginning with HTTP_ and that have a value"""
         regex = re.compile(r'^HTTP_')
         return {
             (regex.sub('', k)).replace('_', '-'): v
             for k, v in meta.items()
-            if k.startswith('HTTP_')
+            if k.startswith('HTTP_') and v
         }
 
     dest_host = request.META.get('HTTP_HOST')
@@ -61,7 +62,7 @@ def api_bouncer(request):
         )
         prepped = session.prepare_request(req)
         resp = session.send(prepped)
-        content_type = resp.headers['content-type']
+        content_type = resp.headers.get('content-type', 'text/html')
 
         return HttpResponse(
             content=resp.content,

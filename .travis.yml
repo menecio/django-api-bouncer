@@ -2,7 +2,7 @@ language: python
 
 services:
   - postgresql
-  
+
 addons:
   postgresql: "9.4"
 
@@ -24,6 +24,8 @@ matrix:
       env: TOXENV=py36-django111
     - python: "3.6"
       env: TOXENV=py36-djangomaster
+    - python: "3.5"
+      env: TOXENV="flake8"
   exclude:
     - python: "3.5"
       env: TOXENV=py36-django111
@@ -41,13 +43,13 @@ cache:
 
 install:
   - pip install coveralls tox
-  
+
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 
 script:
   - tox
-  
+
 after_script:
   - coveralls
 

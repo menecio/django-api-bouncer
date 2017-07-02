@@ -91,11 +91,8 @@ class BouncerSerializer(serializers.Serializer):
     api = serializers.CharField(allow_blank=False, allow_null=False)
     headers = serializers.DictField(child=serializers.CharField())
 
-    def validate(self, data):
-        api = Api.objects.get(name=data['api'])
+    def validate_api(self, value):
+        api = Api.objects.get(name=value)
         if not api:
-            raise serializers.ValidationError({
-                'api': 'Unknown API',
-            })
-
-        return data
+            raise serializers.ValidationError('Unknown API')
+        return value

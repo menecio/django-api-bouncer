@@ -26,13 +26,12 @@ class KeyAuthMiddleware(object):
                     data={'error': 'Unauthorized'},
                     status=403
                 )
-
         response = self.get_response(request)
 
         return response
 
     def verify_key(self, request, config, key):
-        if not key and config.get('key_in_body'):
+        if config.get('key_in_body'):
             key = request.body.get('key')
 
         c_key = (
@@ -42,11 +41,9 @@ class KeyAuthMiddleware(object):
         )
 
         if c_key:
-            request.META['X-Consumer-Username'] = c_key.consumer.username
-            request.META['X-Consumer-Id'] = c_key.consumer.id
-
+            request.META['HTTP_X_CONSUMER_USERNAME'] = c_key.consumer.username
+            request.META['HTTP_X_CONSUMER_ID'] = str(c_key.consumer.id)
             return True
-
         return False
 
     def get_key(self, request, key_names):

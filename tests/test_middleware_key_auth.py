@@ -46,6 +46,30 @@ class KeyAuthMiddlewareTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data['args']['msg'], 'Bounce')
 
+    def test_bounce_api_key_in_body(self):
+        """
+        Ensure we can perform requests on an api using a valid key sent on
+        request body.
+        """
+        self.client.login(username='john', password='john123john')
+        config = {
+            'anonymous': '',
+            'key_names': ['apikey'],
+            'key_in_body': True,
+            'hide_credentials': False,
+        }
+        self.client.post(self.key_auth_url, config)
+        response = self.client.post(self.consumer_key_url)
+        self.client.logout()
+        apikey = response.data['key']
+
+        url = '/post'
+        response = self.client.post(url, {'apikey': apikey})
+        content = response.content.decode('utf-8')
+        data = json.loads(content)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data['args']['msg'], 'Bounce')
+
     def test_bounce_api_authorization_invalid(self):
         """
         Ensure we can't perform requests on an api without using a valid key.

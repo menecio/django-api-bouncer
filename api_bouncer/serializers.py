@@ -74,9 +74,6 @@ class PluginSerializer(serializers.ModelSerializer):
 
         return data
 
-    def process_headers(self, headers={}):
-        return headers
-
 
 class ApiSerializer(serializers.ModelSerializer):
     plugins = PluginSerializer(

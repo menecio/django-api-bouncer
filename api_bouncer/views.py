@@ -58,7 +58,8 @@ def api_bouncer(request):
             request.method,
             url,
             params=request.GET,
-            data=request.POST
+            data=request.POST,
+            headers=serializer.data['headers']
         )
         prepped = session.prepare_request(req)
         resp = session.send(prepped)

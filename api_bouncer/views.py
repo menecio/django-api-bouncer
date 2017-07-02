@@ -1,13 +1,13 @@
 import re
 
-from requests import Request, Session
 from django.http import HttpResponse, JsonResponse
+from requests import Request, Session
 from rest_framework import (
     mixins,
     permissions,
     response,
-    viewsets,
     status,
+    viewsets,
 )
 from rest_framework.decorators import detail_route
 
@@ -24,8 +24,8 @@ from .schemas import (
 from .serializers import (
     ApiSerializer,
     BouncerSerializer,
-    ConsumerSerializer,
     ConsumerKeySerializer,
+    ConsumerSerializer,
     PluginSerializer,
 )
 

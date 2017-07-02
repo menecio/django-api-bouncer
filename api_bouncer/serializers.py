@@ -1,4 +1,5 @@
 import uuid
+
 import jsonschema
 
 from rest_framework import serializers

@@ -65,7 +65,10 @@ class ConsumerKey(models.Model):
     key = models.CharField(
         max_length=200,
         blank=False,
-        null=False
+        null=False,
+        validators=[
+            MinLengthValidator(8),
+        ]
     )
 
     class Meta:

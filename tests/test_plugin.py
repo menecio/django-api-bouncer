@@ -7,7 +7,7 @@ from api_bouncer.models import Api
 User = get_user_model()
 
 
-class ConsumerKeyTests(APITestCase):
+class PluginTests(APITestCase):
     def setUp(self):
         self.superuser = User.objects.create_superuser(
             'john',

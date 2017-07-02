@@ -1,3 +1,5 @@
+import json
+
 from django.http import JsonResponse
 
 from ..models import (
@@ -19,7 +21,11 @@ class KeyAuthMiddleware(object):
 
         if plugin_conf:
             config = plugin_conf.config
-            apikey = self.get_key(request, config['key_names'])
+            apikey = self.get_key(
+                request,
+                config['key_names'],
+                config['key_in_body']
+            )
 
             if not self.verify_key(request, config, apikey):
                 return JsonResponse(
@@ -31,9 +37,6 @@ class KeyAuthMiddleware(object):
         return response
 
     def verify_key(self, request, config, key):
-        if config.get('key_in_body'):
-            key = request.body.get('key')
-
         c_key = (
             ConsumerKey.objects
                        .select_related('consumer')
@@ -46,7 +49,17 @@ class KeyAuthMiddleware(object):
             return True
         return False
 
-    def get_key(self, request, key_names):
+    def get_key(self, request, key_names, key_in_body=False):
+        if key_in_body:
+            try:
+                body = json.loads(request.body.decode('utf-8'))
+                for k in key_names:
+                    if k in body:
+                        return body[k]
+                return None
+            except json.JSONDecodeError:
+                return None
+
         for n in key_names:
             name = n.upper().replace('-', '_')
             key_name = 'HTTP_{0}'.format(name)

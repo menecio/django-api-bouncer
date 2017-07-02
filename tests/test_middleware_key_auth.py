@@ -52,23 +52,34 @@ class KeyAuthMiddlewareTests(APITestCase):
         request body.
         """
         self.client.login(username='john', password='john123john')
-        config = {
-            'anonymous': '',
-            'key_names': ['apikey'],
-            'key_in_body': True,
-            'hide_credentials': False,
+        data = {
+            'name': 'key-auth',
+            'config': {
+                'anonymous': '',
+                'key_names': ['apikey'],
+                'key_in_body': True,
+                'hide_credentials': False,
+            }
         }
-        self.client.post(self.key_auth_url, config)
+        self.client.post(self.key_auth_url, data, format='json')
         response = self.client.post(self.consumer_key_url)
         self.client.logout()
         apikey = response.data['key']
 
         url = '/post'
-        response = self.client.post(url, {'apikey': apikey})
+        self.client.credentials(HTTP_HOST='httpbin.org')
+        response = self.client.post(
+            url,
+            data={'apikey': apikey},
+            format='json'
+        )
         content = response.content.decode('utf-8')
         data = json.loads(content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(data['args']['msg'], 'Bounce')
+        self.assertEqual(
+            data['headers']['X-Consumer-Username'],
+            self.consumer.username
+        )
 
     def test_bounce_api_authorization_invalid(self):
         """

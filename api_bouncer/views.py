@@ -85,12 +85,13 @@ class ApiViewSet(viewsets.ModelViewSet):
     lookup_field = 'name'
 
     @detail_route(
-        methods=['patch', 'put'],
+        methods=['post'],
         permission_classes=[permissions.IsAdminUser],
         url_path='plugins'
     )
     def add_plugin(self, request, name=None):
         api = self.get_object()
+
         plugin_name = request.data.get('name')
         plugin_conf = request.data.get('config')
 
@@ -108,21 +109,20 @@ class ApiViewSet(viewsets.ModelViewSet):
         api_plugin_conf.update(plugin_conf)
 
         data = {
-            'api': api.id,
+            'api': api,
             'name': plugin_name,
             'config': api_plugin_conf,
         }
 
-        if api_plugin:
-            serializer = PluginSerializer(api_plugin, data=data)
-        else:
-            serializer = PluginSerializer(data=data)
+        if not api_plugin:
+            api_plugin = Plugin(**data)
 
+        serializer = PluginSerializer(api_plugin, data=data)
         if serializer.is_valid():
             serializer.save()
             return response.Response(
                 serializer.data,
-                status=status.HTTP_201_CREATED
+                status=status.HTTP_200_OK
             )
 
         return response.Response(

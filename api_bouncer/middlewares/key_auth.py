@@ -24,30 +24,35 @@ class KeyAuthMiddleware(object):
             apikey = self.get_key(
                 request,
                 config['key_names'],
-                config['key_in_body']
+                key_in_body=config['key_in_body']
             )
-
-            if not self.verify_key(request, config, apikey):
+            consumer_key = self.verify_key(request, config, apikey)
+            if not consumer_key:
                 return JsonResponse(
                     data={'error': 'Unauthorized'},
                     status=403
                 )
+            if not config['hide_credentials']:
+                request.META.update({
+                    'HTTP_X_CONSUMER_USERNAME': consumer_key.consumer.username,
+                    'HTTP_X_CONSUMER_ID': str(consumer_key.consumer.id),
+                })
+            else:
+                # Remove apikey from headers
+                for k in config['key_names']:
+                    request.META.pop(k, None)
+
         response = self.get_response(request)
 
         return response
 
     def verify_key(self, request, config, key):
-        c_key = (
+        apikey = (
             ConsumerKey.objects
                        .select_related('consumer')
                        .filter(key=key).first()
         )
-
-        if c_key:
-            request.META['HTTP_X_CONSUMER_USERNAME'] = c_key.consumer.username
-            request.META['HTTP_X_CONSUMER_ID'] = str(c_key.consumer.id)
-            return True
-        return False
+        return apikey
 
     def get_key(self, request, key_names, key_in_body=False):
         if key_in_body:

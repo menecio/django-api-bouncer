@@ -4,7 +4,10 @@ from django.contrib.postgres.fields import (
     ArrayField,
     JSONField,
 )
-from django.core.validators import RegexValidator
+from django.core.validators import (
+    MinLengthValidator,
+    RegexValidator,
+)
 from django.db import models
 
 
@@ -30,7 +33,10 @@ class Api(models.Model):
             validators=[
                 RegexValidator(regex=FQDN_REGEX),
             ]
-        )
+        ),
+        validators=[
+            MinLengthValidator(1, message='At least one is required'),
+        ]
     )
     upstream_url = models.URLField(null=False)
 

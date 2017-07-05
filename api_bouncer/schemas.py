@@ -17,7 +17,22 @@ plugins = {
         },
         'required': ['key_names'],
         'additionalProperties': False
-    }
+    },
+    'ip-restriction': {
+        'type': 'object',
+        'properties': {
+            'whitelist': {
+                'type': 'array',
+            },
+            'blacklist': {
+                'type': 'array',
+            },
+            'consumer_id': {
+                'type': 'string',
+            }
+        },
+        'additionalProperties': False
+    },
 }
 
 defaults = {
@@ -26,5 +41,10 @@ defaults = {
         'key_in_body': False,
         'hide_credentials': False,
         'anonymous': '',
-    }
+    },
+    'ip-restriction': {
+        'consumer_id': '',
+        'whitelist': [],
+        'blacklist': [],
+    },
 }

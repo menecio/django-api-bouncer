@@ -51,5 +51,5 @@ Run `python manage.py migrate` to create the api_bouncer models.
 [coverage]: https://coveralls.io/github/menecio/django-api-bouncer?branch=master
 [build-status-image]: https://travis-ci.org/menecio/django-api-bouncer.svg?branch=master
 [travis]: https://travis-ci.org/menecio/django-api-bouncer?branch=master
-[pypi-version]: https://img.shields.io/badge/pypi-0.1-blue.svg
+[pypi-version]: https://img.shields.io/badge/pypi-0.2-blue.svg
 [pypi]: https://pypi.python.org/pypi/django-api-bouncer

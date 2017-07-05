@@ -4,6 +4,7 @@ import jsonschema
 
 from rest_framework import serializers
 
+from . import validators
 from .models import (
     Api,
     Consumer,
@@ -63,16 +64,26 @@ class PluginSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         name = data.get('name')
+        config = data.get('config', {})
+
         if not name or name not in plugins:
             raise serializers.ValidationError('Invalid plugin name')
 
         plugin_schema = plugins[name]
 
+        if self.instance:
+            initial_config = self.instance.config
+            initial_config.update(config)
+            config = initial_config
+
         try:
-            jsonschema.validate(data['config'], plugin_schema)
+            jsonschema.validate(config, plugin_schema)
         except jsonschema.ValidationError as e:
             raise serializers.ValidationError({'config': e})
 
+        plugin_validator = validators.validator_classes[name]
+        validator = plugin_validator(data['config'])
+        validator()
         return data
 
 

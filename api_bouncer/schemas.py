@@ -33,6 +33,22 @@ plugins = {
         },
         'additionalProperties': False
     },
+    'request-termination': {
+        'type': 'object',
+        'properties': {
+            'consumer_id': {
+                'type': 'string',
+            },
+            'status_code': {
+                'type': 'integer',
+            },
+            'message': {
+                'type': 'string',
+            },
+        },
+        'additionalProperties': False,
+        'required': ['status_code']
+    },
 }
 
 defaults = {
@@ -46,5 +62,10 @@ defaults = {
         'consumer_id': '',
         'whitelist': [],
         'blacklist': [],
+    },
+    'request-termination': {
+        'consumer_id': '',
+        'status_code': 503,
+        'message': '',
     },
 }

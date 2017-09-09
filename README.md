@@ -7,7 +7,7 @@
 API Bouncer is a simple Django app to provide an API
 Gateway for micro-services.
 
-It's heavily inspired by [Kong][kong] :love
+It's heavily inspired by [Kong][kong]
 
 Detailed documentation is in the "docs" directory.
 
@@ -60,7 +60,7 @@ Run `python manage.py migrate` to create the api_bouncer models.
 - **Key authentication:** Add key authentication to your API
 
 #### Security
-- **ACL:*** Control which consumers have access to your API
+- **ACL:** Control which consumers have access to your API
 - **IP estriction:**: Blacklist or whilelist IPs that can access your API 
 
 #### Traffic Control

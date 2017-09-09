@@ -49,6 +49,18 @@ plugins = {
         'additionalProperties': False,
         'required': ['status_code']
     },
+    'acl': {
+        'type': 'object',
+        'properties': {
+            'whitelist': {
+                'type': 'array',
+            },
+            'blacklist': {
+                'type': 'array',
+            },
+        },
+        'additionalProperties': False
+    },
 }
 
 defaults = {
@@ -60,6 +72,10 @@ defaults = {
     },
     'ip-restriction': {
         'consumer_id': '',
+        'whitelist': [],
+        'blacklist': [],
+    },
+    'acl': {
         'whitelist': [],
         'blacklist': [],
     },

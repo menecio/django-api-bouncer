@@ -8,6 +8,7 @@ from . import validators
 from .models import (
     Api,
     Consumer,
+    ConsumerACL,
     ConsumerKey,
     Plugin,
 )
@@ -18,6 +19,26 @@ class ConsumerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Consumer
         fields = '__all__'
+
+
+class ConsumerACLSerializer(serializers.ModelSerializer):
+    consumer = serializers.SlugRelatedField(
+        many=False,
+        read_only=False,
+        slug_field='username',
+        queryset=Consumer.objects.all()
+    )
+
+    class Meta:
+        model = ConsumerACL
+        fields = '__all__'
+        extra_kwargs = {
+            'group': {
+                'required': True,
+                'allow_null': False,
+                'allow_blank': False,
+            },
+        }
 
 
 class ConsumerKeySerializer(serializers.ModelSerializer):

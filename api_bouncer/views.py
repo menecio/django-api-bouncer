@@ -14,6 +14,7 @@ from rest_framework.decorators import detail_route
 from .models import (
     Api,
     Consumer,
+    ConsumerACL,
     ConsumerKey,
     Plugin,
 )
@@ -24,6 +25,7 @@ from .schemas import (
 from .serializers import (
     ApiSerializer,
     BouncerSerializer,
+    ConsumerACLSerializer,
     ConsumerKeySerializer,
     ConsumerSerializer,
     PluginSerializer,
@@ -164,6 +166,36 @@ class ConsumerViewSet(viewsets.ModelViewSet):
             serializer.errors,
             status.HTTP_400_BAD_REQUEST
         )
+
+    @detail_route(
+        methods=['POST'],
+        permission_classes=[permissions.IsAdminUser],
+        url_path='acls',
+    )
+    def add_consumer_acl(self, request, username=None):
+        consumer = self.get_object()
+        data = {
+            'consumer': consumer.username,
+            'group': request.data.get('group'),
+        }
+        serializer = ConsumerACLSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+
+        return response.Response(
+            serializer.errors,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+
+class ConsumerACLViewSet(viewsets.ModelViewSet):
+    serializer_class = ConsumerACLSerializer
+    queryset = ConsumerACL.objects.all()
+    permission_classes = [permissions.IsAdminUser]
 
 
 class ConsumerKeyViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):

@@ -79,7 +79,7 @@ def api_bouncer(request):
 
 class ApiViewSet(viewsets.ModelViewSet):
     serializer_class = ApiSerializer
-    queryset = Api.objects.all()
+    queryset = Api.objects.prefetch_related('plugins').all()
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
         permissions.IsAdminUser,

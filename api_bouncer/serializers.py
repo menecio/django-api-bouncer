@@ -81,9 +81,10 @@ class PluginSerializer(serializers.ModelSerializer):
         except jsonschema.ValidationError as e:
             raise serializers.ValidationError({'config': e})
 
-        plugin_validator = validators.validator_classes[name]
-        validator = plugin_validator(data['config'])
-        validator()
+        plugin_validators = validators.validator_classes.get(name, [])
+        for validator in plugin_validators:
+            validate = validator(data['config'])
+            validate()
         return data
 
 

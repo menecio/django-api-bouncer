@@ -49,18 +49,6 @@ class IPListValidator(BaseValidator):
             })
 
 
-class RequestTerminationValidator(BaseValidator):
-    def __call__(self):
-        # Check valid consumer_id if any given
-        if (
-            self.config.get('consumer_id') and
-            not Consumer.objects.filter(pk=self.config['consumer_id']).first()
-        ):
-            raise serializers.ValidationError({
-                'config': 'Invalid consumer'
-            })
-
-
 validator_classes = {
     'ip-restriction': [IPListValidator, ConsumerValidator, ],
     'request-termination': [ConsumerValidator, ],

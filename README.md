@@ -34,9 +34,15 @@ Activate the `key-auth` plugin by adding the middleware on your settings.py:
 ```python
     MIDDLEWARE = [
         # all other middleware...
+        'api_bouncer.middleware.bouncer.BouncerMiddleware',  # required
         'api_bouncer.middleware.key_auth.KeyAuthMiddleware',
     ]
 ```
+
+Important! 
+Note that you need to include BouncerMiddleware before the rest of plugin
+middleware. Otherwise it will **not** work. 
+
 
 Include the api_bouncer URLconf in your project urls.py like this:
 

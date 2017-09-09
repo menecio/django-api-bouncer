@@ -61,7 +61,7 @@ Run `python manage.py migrate` to create the api_bouncer models.
 
 #### Security
 - **ACL:** Control which consumers have access to your API
-- **IP restriction:**: Blacklist or whilelist IPs that can access your API 
+- **IP restriction:** Blacklist or whilelist IPs that can access your API 
 
 #### Traffic Control
 - **Request termination:** Terminate all request with a specific response.
@@ -71,6 +71,6 @@ Run `python manage.py migrate` to create the api_bouncer models.
 [coverage]: https://coveralls.io/github/menecio/django-api-bouncer?branch=master
 [build-status-image]: https://travis-ci.org/menecio/django-api-bouncer.svg?branch=master
 [travis]: https://travis-ci.org/menecio/django-api-bouncer?branch=master
-[pypi-version]: https://img.shields.io/badge/pypi-0.2-blue.svg
+[pypi-version]: https://img.shields.io/badge/pypi-0.3-blue.svg
 [pypi]: https://pypi.python.org/pypi/django-api-bouncer
 [kong]: https://getkong.org

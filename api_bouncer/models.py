@@ -58,6 +58,28 @@ class Consumer(models.Model):
         return self.username
 
 
+class ConsumerACL(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    consumer = models.ForeignKey(
+        'Consumer',
+        on_delete=models.CASCADE,
+        related_name='acls',
+        related_query_name='acl'
+    )
+    group = models.CharField(
+        max_length=64,
+        blank=False,
+        null=False
+    )
+
+    class Meta:
+        unique_together = ('consumer', 'group')
+
+    def __str__(self):
+        return '{}: {}'.format(self.consumer.name, self.group)
+
+
 class ConsumerKey(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)

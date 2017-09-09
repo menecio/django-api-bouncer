@@ -7,6 +7,7 @@ from . import views
 
 router = SimpleRouter()
 router.register(r'apis', views.ApiViewSet)
+router.register(r'acls', views.ConsumerACLViewSet)
 router.register(r'consumers', views.ConsumerViewSet)
 router.register(r'plugins', views.PluginViewSet)
 

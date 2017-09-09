@@ -28,15 +28,9 @@ class ConsumerValidator(BaseValidator):
 
 class IPListValidator(BaseValidator):
     def __call__(self):
-        # Whitelist and blacklist are mutually exclusives
-        if self.config['whitelist'] and self.config['blacklist']:
-            raise serializers.ValidationError({
-                'config': 'Whitelist and blacklist are mutually exclusive',
-            })
-
         # Remove duplicated values
-        self.config['whitelist'] = list(set(self.config['whitelist']))
-        self.config['blacklist'] = list(set(self.config['blacklist']))
+        self.config['whitelist'] = list(set(self.config.get('whitelist', [])))
+        self.config['blacklist'] = list(set(self.config.get('blacklist', [])))
 
         try:
             [
@@ -49,7 +43,21 @@ class IPListValidator(BaseValidator):
             })
 
 
+class WhitelistBlacklistMutuallyExclusive(BaseValidator):
+    def __call__(self):
+        # Whitelist and blacklist are mutually exclusives
+        if self.config.get('whitelist') and self.config.get('blacklist'):
+            raise serializers.ValidationError({
+                'config': 'Whitelist and blacklist are mutually exclusive',
+            })
+
+
 validator_classes = {
-    'ip-restriction': [IPListValidator, ConsumerValidator, ],
+    'ip-restriction': [
+        WhitelistBlacklistMutuallyExclusive,
+        IPListValidator,
+        ConsumerValidator,
+    ],
     'request-termination': [ConsumerValidator, ],
+    'acl': [WhitelistBlacklistMutuallyExclusive, ]
 }

@@ -93,7 +93,6 @@ class ApiViewSet(viewsets.ModelViewSet):
     )
     def add_plugin(self, request, name=None):
         api = self.get_object()
-
         plugin_name = request.data.get('name')
         plugin_conf = request.data.get('config')
 

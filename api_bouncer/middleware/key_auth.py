@@ -13,12 +13,12 @@ class KeyAuthMiddleware(object):
         config = request.META['BOUNCER_PLUGINS'].get('key-auth')
 
         if config:
-            apikey = self.get_key(
+            apikey = self.get_key_from_headers(
                 request,
                 config['key_names'],
                 key_in_body=config['key_in_body']
             )
-            consumer_key = self.verify_key(request, config, apikey)
+            consumer_key = self.get_apikey(request, config, apikey)
             if not consumer_key:
                 return JsonResponse(
                     data={'error': 'Unauthorized'},
@@ -29,16 +29,15 @@ class KeyAuthMiddleware(object):
                     'HTTP_X_CONSUMER_USERNAME': consumer_key.consumer.username,
                     'HTTP_X_CONSUMER_ID': str(consumer_key.consumer.id),
                 })
-            else:
-                # Remove apikey from headers
-                for k in config['key_names']:
-                    request.META.pop(k, None)
+            # Remove apikey from headers
+            for k in config['key_names']:
+                request.META.pop('HTTP_{}'.format(k.upper()), None)
 
         response = self.get_response(request)
 
         return response
 
-    def verify_key(self, request, config, key):
+    def get_apikey(self, request, config, key):
         apikey = (
             ConsumerKey.objects
                        .select_related('consumer')
@@ -46,7 +45,7 @@ class KeyAuthMiddleware(object):
         )
         return apikey
 
-    def get_key(self, request, key_names, key_in_body=False):
+    def get_key_from_headers(self, request, key_names, key_in_body=False):
         if key_in_body:
             try:
                 body = json.loads(request.body.decode('utf-8'))

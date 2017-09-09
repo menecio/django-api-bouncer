@@ -26,9 +26,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'api_bouncer.middlewares.key_auth.KeyAuthMiddleware',
-    'api_bouncer.middlewares.ip_restriction.IpRestrictionMiddleware',
-    'api_bouncer.middlewares.request_termination.RequestTerminationMiddleware',
+    'api_bouncer.middleware.bouncer.BouncerMiddleware',
+    'api_bouncer.middleware.key_auth.KeyAuthMiddleware',
+    'api_bouncer.middleware.ip_restriction.IpRestrictionMiddleware',
+    'api_bouncer.middleware.request_termination.RequestTerminationMiddleware',
 ]
 
 ROOT_URLCONF = 'tests.urls'

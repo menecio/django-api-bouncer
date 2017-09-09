@@ -33,8 +33,8 @@ Activate the `key-auth` plugin by adding the middleware on your settings.py:
 
 ```python
     MIDDLEWARE = [
-        # all other middlewares...
-        'api_bouncer.middlewares.key_auth.KeyAuthMiddleware',
+        # all other middleware...
+        'api_bouncer.middleware.key_auth.KeyAuthMiddleware',
     ]
 ```
 

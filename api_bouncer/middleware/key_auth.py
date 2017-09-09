@@ -2,10 +2,7 @@ import json
 
 from django.http import JsonResponse
 
-from ..models import (
-    ConsumerKey,
-    Plugin,
-)
+from ..models import ConsumerKey
 
 
 class KeyAuthMiddleware(object):
@@ -13,14 +10,9 @@ class KeyAuthMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
-        host = request.META.get('HTTP_HOST')
-        plugin_conf = Plugin.objects.filter(
-            api__hosts__contains=[host],
-            name='key-auth'
-        ).first()
+        config = request.META['BOUNCER_PLUGINS'].get('key-auth')
 
-        if plugin_conf:
-            config = plugin_conf.config
+        if config:
             apikey = self.get_key(
                 request,
                 config['key_names'],

@@ -42,7 +42,7 @@ Activate the `key-auth` plugin by adding the middleware on your settings.py:
 ```
 
 Important! 
-Note that you need to include BouncerMiddleware before the rest of plugin
+Note that you need to include `BouncerMiddleware` before the rest of plugin
 middleware. Otherwise it will **not** work. 
 
 
@@ -61,7 +61,7 @@ Run `python manage.py migrate` to create the api_bouncer models.
 
 #### Security
 - **ACL:** Control which consumers have access to your API
-- **IP estriction:**: Blacklist or whilelist IPs that can access your API 
+- **IP restriction:**: Blacklist or whilelist IPs that can access your API 
 
 #### Traffic Control
 - **Request termination:** Terminate all request with a specific response.

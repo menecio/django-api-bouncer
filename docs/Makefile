@@ -27,7 +27,8 @@ gh-pages:
 	git reset HEAD
 	make html
 	rm -rf $(GH_PAGES_SOURCES)
-	mv -fv $(BUILDDIR)/html/.[!.]* ./
+	mv -fv $(BUILDDIR)/html/.nojekyll ../
+	mv -fv $(BUILDDIR)/html/* ./
 	rm -rf $(BUILDDIR)
 	git add -A
 	git commit -m "Generated gh-pages for `git log master -1 --pretty=short --abbrev-commit`" && git push origin gh-pages ; git checkout master

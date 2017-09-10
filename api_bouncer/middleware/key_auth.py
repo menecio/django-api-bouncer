@@ -2,6 +2,8 @@ import json
 
 from django.http import JsonResponse
 
+from rest_framework import status
+
 from ..models import ConsumerKey
 
 
@@ -22,7 +24,7 @@ class KeyAuthMiddleware(object):
             if not consumer_key:
                 return JsonResponse(
                     data={'error': 'Unauthorized'},
-                    status=403
+                    status=status.HTTP_401_UNAUTHORIZED
                 )
             if not config['hide_credentials']:
                 request.META.update({

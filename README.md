@@ -72,7 +72,7 @@ Documentation can be found in the `docs` directory or [here][docs]
 [coverage]: https://coveralls.io/github/menecio/django-api-bouncer?branch=master
 [build-status-image]: https://travis-ci.org/menecio/django-api-bouncer.svg?branch=master
 [travis]: https://travis-ci.org/menecio/django-api-bouncer?branch=master
-[pypi-version]: https://img.shields.io/badge/pypi-0.3-blue.svg
+[pypi-version]: https://img.shields.io/badge/pypi-0.3.1-blue.svg
 [pypi]: https://pypi.python.org/pypi/django-api-bouncer
 [kong]: https://getkong.org
 [docs]: http://www.menecio.me/django-api-bouncer/docs

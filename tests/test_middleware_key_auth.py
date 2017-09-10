@@ -94,4 +94,16 @@ class KeyAuthMiddlewareTests(APITestCase):
         url = '/get'
         self.client.credentials(HTTP_HOST='httpbin.org', HTTP_APIKEY=apikey)
         response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_bounce_api_key_without_apikey(self):
+        """
+        Ensure we can't perform requests on an api without sending apikey.
+        """
+        self.client.login(username='john', password='john123john')
+        self.client.post(self.key_auth_url, {'name': 'key-auth'})
+        self.client.logout()
+        url = '/get'
+        self.client.credentials(HTTP_HOST='httpbin.org')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
